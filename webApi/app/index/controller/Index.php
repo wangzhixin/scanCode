@@ -10,4 +10,7 @@ class Index
     {
         return view();
     }
+    public function add(){
+        return view();
+    }
 }
