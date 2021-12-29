@@ -10,6 +10,10 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
-Route::get('/', function () {
-    return '';
+Route::group(function () {
+    Route::post('login', 'User/loginAdmin');
 });
+Route::group(function () {
+    Route::post('getUserInfo', 'User/getUserInfo');
+    Route::post('logout', 'User/logoutAdmin');
+})->middleware(\app\api\middleware\Token::class);
