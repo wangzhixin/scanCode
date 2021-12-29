@@ -13,4 +13,7 @@ class Index
     public function add(){
         return view();
     }
+    public function show(){
+        return view();
+    }
 }
