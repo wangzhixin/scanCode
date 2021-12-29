@@ -6,32 +6,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>医疗机构新型冠状病毒肺炎筛查表 COVID-19 Screening Questionnaire for Healthcare Facilities</title>
+    <script src="__JS__/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="__CSS__/add.css">
 </head>
 
 <body>
     <div class="main">
         <div class="title"><span class="must">*</span>姓名 Name:</div>
         <div class="input-list">
-            <input class="input" name="" placeholder="请输入姓名" maxlength="" autocomplete="off" type="text">
+            <input id="name" class="input" name="" placeholder="请输入姓名" maxlength="" autocomplete="off" type="text">
         </div>
         <div class="title"><span class="must">*</span>证件类型 ID Type:</div>
-        <div class="input-list input-none">
+        <div class="input-list input-none" id="id">
+            <div class="choose-text id_type"></div>
+            <input type="hidden" value="" id="id_type">
             <div class="right"><img src="__IMG__/right.png?s=1" alt="" srcset=""></div>
         </div>
         <div class="title"><span class="must">*</span>证件号码 ID Number:</div>
         <div class="input-list">
-            <input class="input" name="" placeholder="请输入" maxlength="" autocomplete="off" type="text">
+            <input id="id_number" class="input" name="" placeholder="请输入" maxlength="" autocomplete="off" type="text">
         </div>
         <div class="title"><span class="must">*</span>联系电话 Contact Number:</div>
         <div class="input-list">
-            <input class="input" name="" placeholder="请输入" maxlength="" autocomplete="off" type="text">
+            <input id="phone_number" class="input" name="" placeholder="请输入" maxlength="" autocomplete="off" type="text">
         </div>
         <div class="title"><span class="must">*</span>现住省 Province:</div>
-        <div class="input-list input-none">
+        <div class="input-list input-none" id="rovince">
+            <div class="choose-text province_value"></div>
+            <input type="hidden" value="" id="province_value">
             <div class="right"><img src="__IMG__/right.png?s=1" alt="" srcset=""></div>
         </div>
         <div class="title"><span class="must">*</span>现住城市 City:</div>
-        <div class="input-list input-none">
+        <div class="input-list input-none" id="city">
+            <div class="choose-text city_value"></div>
+            <input type="hidden" value="" id="city_value">
             <div class="right"><img src="__IMG__/right.png?s=1" alt="" srcset=""></div>
         </div>
         <div class="title"><span class="must">*</span>现住区域 District:</div>
@@ -81,7 +89,7 @@
 
 
         <div class="btng">
-            <div class="btn">
+            <div class="btn" id="submit">
                 <div class="cn">我承诺所填信息准确并提交</div>
                 <div class="en">I commit all provided information is accurate and give my Permission to submit the
                     information. </div>
@@ -90,275 +98,23 @@
 
     </div>
     <div class="alert">
-        <div class="text">
-            <div class="error"><img src="__IMG__/error.png" alt=""></div>
-            <div>证件号码不能为空</div>
+        <div class="alertDiv">
+            <div class="text">
+                <div class="error"><img src="__IMG__/error.png" alt=""></div>
+                <div id="alertMsg">证件号码不能为空</div>
+            </div>
         </div>
     </div>
     <div class="choose">
         <div class="select">
-            <div class="title">证件类型 ID Type</div>
-            <div class="listDiv" id="listDiv">
-                <div class="list">身份证 Identity Card</div>
-                <div class="list">港澳台通行证 Mainland Travel Permit for HongKong/Macao/Taiwan Residents</div>
-                <div class="list">护照 Passport</div>
-            </div>
+            <div class="title" id="choose-title"></div>
+            <div class="close"><img src="__IMG__/error.png" alt=""></div>
+            <div class="listDiv" id="listDiv"></div>
         </div>
     </div>
+    <input id="apiUrl" type="hidden" value="<?php echo $apiUrl;?>">
 
 </body>
-<script src="__JS__/jquery-3.5.1.min.js"></script>
-<script>
-
-</script>
-<style>
-    body {
-        font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
-        -webkit-tap-highlight-color: transparent;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-
-    .main {
-        background: #fff;
-        margin-top: 1rem;
-        padding: 1rem;
-    }
-
-    .title {
-        margin-top: 1rem;
-        font-weight: 460;
-    }
-
-    .title .must {
-        color: red;
-        margin-right: 0.5rem;
-    }
-
-    .input-list {
-        padding-top: 0;
-        padding-bottom: 0;
-        align-items: center;
-        border-bottom: 1px solid #e2e4ea;
-    }
-
-    .input-none {
-        position: relative;
-        min-height: 13.33333vw;
-    }
-
-    .input-none .right {
-        width: 16px;
-        height: 16px;
-        position: absolute;
-        right: 0px;
-        bottom: 26px;
-    }
-
-    .input-none .right img {
-        width: 100%;
-        height: 100%;
-    }
-
-    .input-list .input {
-        width: 100%;
-        height: 13.33333vw;
-        color: #111a34;
-        font-size: 4.26667vw;
-        font-weight: 500;
-        font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
-        line-height: 1;
-        border: none;
-        background: 0 0;
-        outline: 0;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-    }
-
-    .btn {
-        margin-top: 1rem;
-        background: #4a9bfd;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-    }
-
-    .btn .cn {
-        font-weight: 400;
-        text-align: center;
-        font-size: 1rem;
-        color: #fff;
-    }
-
-    .btn .en {
-        font-weight: 400;
-        text-align: center;
-        font-size: 1rem;
-        color: #fff;
-    }
-
-    .dconname {
-        margin-top: 1rem;
-        font-weight: 460;
-    }
-
-    .bottom-dinger {
-        display: flex;
-        align-items: center;
-        margin-top: 1rem;
-    }
-
-    .bottom-dinger .dinger {
-        margin-left: 5px;
-        color: red;
-        margin-right: 0.5rem;
-        font-size: 15px;
-
-    }
-
-    .dinger-en {
-        color: red;
-        font-size: 15px;
-        margin-right: 0.5rem;
-        font-weight: 460;
-        margin-top: 1rem;
-
-    }
-
-    .problem-list {
-        margin-top: 1rem;
-        font-size: 15px;
-    }
-
-    .problem-list .en {
-        color: #0000008c;
-        font-weight: 400;
-        margin-top: 5px;
-    }
-
-    .problem-list .img img {
-        width: 100%;
-        margin-top: 5px;
-    }
-
-    .problem-list .CheckBox {
-        display: flex;
-        justify-content: space-around;
-        border: 1px solid #e2e4ea;
-        margin-top: 1rem;
-    }
-
-    .problem-list .CheckBox .left {
-        width: 50%;
-        border-right: 1px solid #e2e4ea;
-    }
-
-    .problem-list .CheckBox .right {
-        width: 50%;
-    }
-
-    .problem-list .CheckBox input {
-        margin-left: 10px;
-    }
-
-    .alert {
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        position: fixed;
-        z-index: 1000;
-        border: 1px solid red;
-        display: none;
-    }
-
-    .alert .text {
-
-        display: flex;
-        flex-wrap: nowrap;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-
-        width: 72vw;
-        background-color: rgba(65, 72, 93, .77);
-        font-size: 3.73333vw;
-        text-align: center;
-        color: #fff;
-        height: 35px;
-        line-height: 35px;
-        position: absolute;
-        left: 50%;
-        margin-left: -36vw;
-        top: 50%;
-        margin-top: -27px;
-    }
-
-    .alert .text .error {
-        width: 21px;
-        height: 21px;
-        background: white;
-        border-radius: 15px;
-        overflow: hidden;
-        margin-right: 10px;
-        text-align: center;
-        line-height: 21px;
-    }
-
-    .alert .text .error img {
-        width: 50%;
-        height: 50%;
-    }
-
-    .choose {
-        display: none;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        position: fixed;
-        z-index: 1000;
-        z-index: 1;
-        background-color: rgba(37, 38, 45, .7);
-    }
-
-    .choose .select {
-        border-radius: 5.33333vw 5.33333vw 0 0;
-        background-color: #fff;
-        width: 100%;
-        position: fixed;
-        pointer-events: auto;
-        z-index: 2;
-        max-width: 100%;
-        max-height: 100%;
-        height: 43vh;
-        bottom: 0px;
-    }
-
-    .choose .title {
-        font-size: 5.33333vw;
-        color: #111a34;
-        text-align: center;
-        margin-top: 6vh;
-        margin-bottom: 2vh;
-    }
-
-    .choose .select .listDiv {
-        text-align: center;
-        overflow: auto;
-        height: 31vh;
-    }
-
-    .choose .select .list {
-        border-bottom: 1px solid #e2e4ea;
-        padding-top: 4.26667vw;
-        padding-bottom: 4.26667vw;
-        margin-left: 6vw;
-        margin-right: 6vw;
-    }
-</style>
+<script src="__JS__/add.js"></script>
 
 </html>
