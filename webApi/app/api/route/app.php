@@ -16,4 +16,22 @@ Route::group(function () {
 Route::group(function () {
     Route::post('getUserInfo', 'User/getUserInfo');
     Route::post('logout', 'User/logoutAdmin');
+    Route::post('getUserList', 'User/getUserList');
+
+    Route::post('uploadFile', 'File/uploadFile');
+
+    Route::post('submitSetting', 'Setting/submitSetting');
+    Route::post('getSetting', 'Setting/getSetting');
+    
+    Route::post('problemList', 'Problem/problemList');
+    Route::post('submitProblem', 'Problem/submitProblem');
+    Route::post('deleteProblem', 'Problem/deleteProblem');
+
+    Route::post('getHospitalList', 'Hospital/getHospitalList');
+    Route::post('submitHospital', 'Hospital/submitHospital');
+    Route::post('deleteHospital', 'Hospital/deleteHospital');
+    Route::post('getDepartmentList', 'Hospital/getDepartmentList');
+    Route::post('submitDepartmentList', 'Hospital/submitDepartmentList');
+    Route::post('deleteDepartmentList', 'Hospital/deleteDepartmentList');
+
 })->middleware(\app\api\middleware\Token::class);

@@ -2,12 +2,14 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+import { getToken, getTokenKey } from '@/utils/auth'
+import store from '@/store'
 /**
- * Parse the time to string
- * @param {(Object|string|number)} time
- * @param {string} cFormat
- * @returns {string | null}
- */
+  * Parse the time to string
+  * @param {(Object|string|number)} time
+  * @param {string} cFormat
+  * @returns {string | null}
+  */
 export function parseTime(time, cFormat) {
   if (arguments.length === 0 || !time) {
     return null
@@ -52,10 +54,10 @@ export function parseTime(time, cFormat) {
 }
 
 /**
- * @param {number} time
- * @param {string} option
- * @returns {string}
- */
+  * @param {number} time
+  * @param {string} option
+  * @returns {string}
+  */
 export function formatTime(time, option) {
   if (('' + time).length === 10) {
     time = parseInt(time) * 1000
@@ -82,22 +84,22 @@ export function formatTime(time, option) {
   } else {
     return (
       d.getMonth() +
-      1 +
-      '月' +
-      d.getDate() +
-      '日' +
-      d.getHours() +
-      '时' +
-      d.getMinutes() +
-      '分'
+       1 +
+       '月' +
+       d.getDate() +
+       '日' +
+       d.getHours() +
+       '时' +
+       d.getMinutes() +
+       '分'
     )
   }
 }
 
 /**
- * @param {string} url
- * @returns {Object}
- */
+  * @param {string} url
+  * @returns {Object}
+  */
 export function param2Obj(url) {
   const search = decodeURIComponent(url.split('?')[1]).replace(/\+/g, ' ')
   if (!search) {
@@ -115,3 +117,55 @@ export function param2Obj(url) {
   })
   return obj
 }
+/**
+  * @Time    :   2020/11/11 10:32:35
+  * @Author  :   wangZhixin
+  * @Desc    :   接口地址
+  */
+export function getApiUrl(apiName) {
+  return process.env.VUE_APP_BASE_API + '/' + apiName + '.html'
+}
+/**
+  * @Time    :   2020/12/07 17:00:09
+  * @Author  :   wangZhixin
+  * @Desc    :   上传文件时的headers
+  */
+export function getUploadFileHeaders() {
+  var header = {}
+  header[getTokenKey()] = getToken()
+  return header
+}
+/**
+  * @Time    :   2021/03/03 10:58:43
+  * @Author  :   wangZhixin
+  * @Desc    :   判断是否是超级管理员账户
+  */
+export function isAdmin() {
+  var is = false
+  var roles = store.getters.roles
+  roles.forEach(eachRoles => {
+    if (eachRoles === 'admin') {
+      is = true
+    }
+  })
+  return is
+}
+export function getNowFormatDate(thisDate = '') {
+  var date = new Date()
+  if (thisDate) {
+    date = thisDate
+  }
+  var seperator1 = '-'
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1
+  var strDate = date.getDate()
+  if (month >= 1 && month <= 9) {
+    month = '0' + month
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = '0' + strDate
+  }
+  var currentdate = year + seperator1 + month + seperator1 + strDate
+  return currentdate
+}
+

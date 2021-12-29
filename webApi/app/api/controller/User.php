@@ -79,4 +79,23 @@ class User extends BaseController
         $this->setMsg();
         return $this->jsonEncode();
     }
+    /**
+     * @Time    :   2021/12/29 16:56:47
+     * @Author  :   wangZhixin 
+     * @Desc    :   用户列表
+     */
+    public function getUserList()
+    {
+        $this->setMsg();
+        $getLimit = $this->getLimit();
+        $limit = $getLimit['limitStart'];
+        $pageCount = $getLimit['limitEnd'];
+        
+        $list = Db::table('user')->order('user_id', 'desc')->limit($limit, $pageCount)->select();
+        if ($list) {
+            $count = Db::table('user')->count();
+            $this->setData(['list' => $list, 'pageSize' => $pageCount, 'total' => $count]);
+        }
+        return $this->jsonEncode();
+    }
 }
