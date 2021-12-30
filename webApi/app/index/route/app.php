@@ -12,4 +12,7 @@ use think\facade\Route;
 
 Route::group(function () {
     Route::post('getAreaList', 'Index/getAreaList');
+    Route::post('getHospitalList', 'Index/getHospitalList');
+    Route::post('getDepartment', 'Index/getDepartment');
+    Route::post('submitContent', 'Index/submitContent');
 });

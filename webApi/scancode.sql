@@ -3,15 +3,15 @@
 
  Source Server         : 本地
  Source Server Type    : MySQL
- Source Server Version : 80025
+ Source Server Version : 80018
  Source Host           : localhost:3306
  Source Schema         : scancode
 
  Target Server Type    : MySQL
- Target Server Version : 80025
+ Target Server Version : 80018
  File Encoding         : 65001
 
- Date: 29/12/2021 18:30:10
+ Date: 30/12/2021 23:26:39
 */
 
 SET NAMES utf8mb4;
@@ -22,15 +22,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_users`;
 CREATE TABLE `admin_users`  (
-  `admin_id` int NOT NULL AUTO_INCREMENT,
+  `admin_id` int(11) NOT NULL AUTO_INCREMENT,
   `admin_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `admin_password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `admin_type` tinyint NOT NULL DEFAULT 0 COMMENT '1:管理员；2：部分权限',
-  `is_deleted` tinyint NOT NULL DEFAULT 0,
-  `add_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `admin_type` tinyint(4) NOT NULL DEFAULT 0 COMMENT '1:管理员；2：部分权限',
+  `is_deleted` tinyint(4) NOT NULL DEFAULT 0,
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`admin_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_users
@@ -42,12 +42,12 @@ INSERT INTO `admin_users` VALUES (1, 'admin', 'ca0e01866911a696eb064df91139097e'
 -- ----------------------------
 DROP TABLE IF EXISTS `area_list`;
 CREATE TABLE `area_list`  (
-  `area_id` int NOT NULL,
+  `area_id` int(11) NOT NULL,
   `area_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `parent_area_id` int NOT NULL DEFAULT 0 COMMENT '父类ID',
+  `parent_area_id` int(11) NOT NULL DEFAULT 0 COMMENT '父类ID',
   PRIMARY KEY (`area_id`) USING BTREE,
   INDEX `parent_area_id`(`parent_area_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of area_list
@@ -52972,13 +52972,13 @@ INSERT INTO `area_list` VALUES (71620, '都杨镇', 1700);
 -- ----------------------------
 DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department`  (
-  `department_id` int NOT NULL AUTO_INCREMENT,
+  `department_id` int(11) NOT NULL AUTO_INCREMENT,
   `department_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `hospital_id` int NOT NULL DEFAULT 0,
-  `add_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `hospital_id` int(11) NOT NULL DEFAULT 0,
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`department_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of department
@@ -52992,12 +52992,12 @@ INSERT INTO `department` VALUES (4, '123', 2, '2021-12-29 18:21:06', '2021-12-29
 -- ----------------------------
 DROP TABLE IF EXISTS `hospital`;
 CREATE TABLE `hospital`  (
-  `hospital_id` int NOT NULL AUTO_INCREMENT,
+  `hospital_id` int(11) NOT NULL AUTO_INCREMENT,
   `hospital_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `add_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`hospital_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of hospital
@@ -53010,15 +53010,15 @@ INSERT INTO `hospital` VALUES (2, '3333', '2021-12-29 17:53:31', '2021-12-29 17:
 -- ----------------------------
 DROP TABLE IF EXISTS `problem`;
 CREATE TABLE `problem`  (
-  `problem_id` int NOT NULL AUTO_INCREMENT,
+  `problem_id` int(11) NOT NULL AUTO_INCREMENT,
   `problem` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `problem_en` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `is_deleted` tinyint NULL DEFAULT 0,
-  `add_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `is_deleted` tinyint(4) NULL DEFAULT 0,
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`problem_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of problem
@@ -53034,12 +53034,12 @@ INSERT INTO `problem` VALUES (5, '1', '2', 'http://scancode.com/storage/upload/2
 -- ----------------------------
 DROP TABLE IF EXISTS `setting`;
 CREATE TABLE `setting`  (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `logo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
   `title_en` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of setting
@@ -53051,16 +53051,46 @@ INSERT INTO `setting` VALUES (1, 'http://scancode.com/storage/upload/20211229\\d
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
-  `user_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `header_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `nick_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `add_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for user_data
+-- ----------------------------
+DROP TABLE IF EXISTS `user_data`;
+CREATE TABLE `user_data`  (
+  `data_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT 0,
+  `user_type` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1:自己；2：同行人员1；2：同行人员2',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `id_type` tinyint(4) NOT NULL DEFAULT 0,
+  `id_number` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `phone_number` varchar(11) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `province_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `city_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `district_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `hospital_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `department_value` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `problemList` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `invalid_time` int(11) NOT NULL DEFAULT 0 COMMENT '失效时间',
+  `add_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`data_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_data
+-- ----------------------------
+INSERT INTO `user_data` VALUES (1, 1, 1, '111', 1, '222', '13261920705', '北京', '海淀区', '三环到四环之间', '北京市海淀区中关村信息中心A座', '1111333', '2222', '[{\"id\":\"v_2\",\"value\":\"0\"},{\"id\":\"v_3\",\"value\":\"0\"},{\"id\":\"v_4\",\"value\":\"0\"},{\"id\":\"v_5\",\"value\":\"0\"}]', 1640964373, '2021-12-30 23:26:13', '2021-12-30 23:26:13');
 
 SET FOREIGN_KEY_CHECKS = 1;
