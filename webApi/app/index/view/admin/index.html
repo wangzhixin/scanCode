@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户信息查看</title>
+</head>
+
+<body>
+    <div class="logo">
+        <img src="<?php echo $data['logo'];?>" alt="">
+    </div>
+    <?php if($status==1){?>
+    <div class="status success">通过</div>
+    <?php }else{?>
+    <div class="status warning">异常</div>
+    <?php }?>
+    <div class="main">
+        <?php if($userData){?>
+        <div class="list"><span>到期时间：</span>
+            <?php echo $userData['invalid_time_text'];?>
+        </div>
+        <div class="list"><span>姓名：</span>
+            <?php echo $userData['name'];?>
+        </div>
+        <div class="list"><span>证件类型：</span>
+            <?php echo $userData['id_type_text'];?>
+        </div>
+        <div class="list"><span>证件号码：</span>
+            <?php echo $userData['id_number'];?>
+        </div>
+        <div class="list"><span>联系电话：</span>
+            <?php echo $userData['phone_number'];?>
+        </div>
+        <div class="list"><span>现住省：</span>
+            <?php echo $userData['province_value'];?>
+        </div>
+        <div class="list"><span>现住城市：</span>
+            <?php echo $userData['city_value'];?>
+        </div>
+        <div class="list"><span>现住区域：</span>
+            <?php echo $userData['district_value'];?>
+        </div>
+        <div class="list"><span>现住址：</span>
+            <?php echo $userData['address'];?>
+        </div>
+        <div class="list"><span>就诊医院：</span>
+            <?php echo $userData['hospital_value'];?>
+        </div>
+        <div class="list"><span>就诊科室：</span>
+            <?php echo $userData['department_value'];?>
+        </div>
+        <div style="clear: both;"></div>
+        <?php foreach($problemList as $each){?>
+        <div class="problem">
+            <div class="title">
+                <?php echo $each['title'];?>
+            </div>
+            <div class="answer" <?php if($each['value']==1){echo 'style="color: red;"' ;}?>>
+                <?php echo $each['choose'];?>
+            </div>
+        </div>
+        <?php }?>
+        <div style="height:100px;"></div>
+        <?php }else{?>
+        <div class="list">用户不存在~</div>
+        <?php }?>
+    </div>
+</body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .logo {
+        text-align: center;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .logo img {
+        width: 60%;
+    }
+
+    .main {
+        padding: 1vw 5vw 0 5vw;
+        font-size: 4.595vw;
+    }
+
+    .list {
+        margin-top: 10px;
+        word-wrap: break-word
+    }
+
+    .list span {
+        border: 1px solid white;
+        width: 25vw;
+        display: block;
+        float: left;
+    }
+
+    .problem {
+        margin-top: 15px;
+    }
+
+    .title {
+        word-wrap: break-word;
+    }
+
+    .answer {
+        margin-top: 5px;
+    }
+
+    .status {
+        font-size: 12vw;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .success {
+        color: #06a306fa;
+    }
+
+    .warning {
+        color: rgb(217 217 27);
+    }
+</style>
+
+</html>

@@ -26,6 +26,7 @@ class User extends BaseController
                 $where['admin_name'] = $userName;
                 $where['admin_password'] = $checkPassword;
                 $where['is_deleted'] = 0;
+                $where['admin_type'] = 1;
                 $find = Db::table('admin_users')->where($where)->find();
                 if ($find) {
                     $data['path'] = '/';
@@ -90,7 +91,7 @@ class User extends BaseController
         $getLimit = $this->getLimit();
         $limit = $getLimit['limitStart'];
         $pageCount = $getLimit['limitEnd'];
-        
+
         $list = Db::table('user')->order('user_id', 'desc')->limit($limit, $pageCount)->select();
         if ($list) {
             $count = Db::table('user')->count();

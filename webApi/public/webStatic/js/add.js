@@ -269,6 +269,7 @@ $(function () {
                 hospital_value: hospital_value,
                 department_value: department_value,
                 problemList: problemList,
+                peopleType: $("#peopleType").val()
             };
             $(".loading").show();
             var url = $("#apiUrl").val() + "submitContent.html";
@@ -284,8 +285,6 @@ $(function () {
             });
 
         }
-
-
     });
 
 });

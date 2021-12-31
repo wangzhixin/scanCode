@@ -1,6 +1,5 @@
 <?php
 
-use \think\facade\Db;
 // 应用公共文件
 function jsonEncode($array)
 {
@@ -64,29 +63,6 @@ function getUrl($url)
     $tmpInfo = curl_exec($curl);
     curl_close($curl);
     return $tmpInfo;
-}
-/**
- * @desc 上传多个文件
- * @date 2020-07-21
- */
-function uploadMoreFile($files, $config, $path = 'admin')
-{
-    $result = array('code' => '0', 'msg' => '上传失败');
-    try {
-        // 验证
-        validate($config)->check(['imgFile' => $files]);
-        // 上传图片到本地服务器
-        $savename = [];
-        foreach ($files as $file) {
-            $savename[] = config('filesystem.disks.public.url') . '/' . \think\facade\Filesystem::disk('public')->putFile($path, $file);
-        }
-        $result['code'] = '1';
-        $result['msg'] = 'ok';
-        $result['data']['path'] = $savename;
-    } catch (\Throwable $th) {
-        $result['msg'] = $th->getMessage();
-    }
-    return $result;
 }
 /**
  * @desc 超过长度用省略号代替
@@ -419,81 +395,9 @@ function math_get($a)
 function hiddenNickname($user_name)
 {
     $strlen     = mb_strlen($user_name, 'utf-8');
-    $firstStr     = mb_substr($user_name, 0, 1, 'utf-8');
-    $lastStr     = mb_substr($user_name, -1, 1, 'utf-8');
-    return $strlen == 2 ? $firstStr . str_repeat('*', mb_strlen($user_name, 'utf-8') - 1) : $firstStr . str_repeat("*", $strlen - 2) . $lastStr;
-}
-/**
- * @Time    :   2021/03/18 14:37:16
- * @Author  :   wangZhixin 
- * @Desc    :   rgb转换成json
- */
-function rgbToJson($rgbColor)
-{
-    $return = array();
-    if ($rgbColor) {
-        $rgbColor = str_replace("rgb(", "", $rgbColor);
-        $rgbColor = str_replace(")", "", $rgbColor);
-        $string = explode(',', $rgbColor);
-        foreach ($string as $each) {
-            $return[] = (int)trim($each);
-        }
-    }
-    return json_encode($return);
-}
-/**
- * @Time    :   2021/03/18 14:39:23
- * @Author  :   wangZhixin 
- * @Desc    :   json转换成RGB
- */
-function jsonToRgb($jsonColor)
-{
-    $return = "";
-    if ($jsonColor) {
-        $jsonColor = json_decode($jsonColor, true);
-        $jsonColor = 'rgb(' . implode(',', $jsonColor) . ")";
-        $return = $jsonColor;
-    }
-    return $return;
-}
-/**
- * @Time    :   2021/04/01 15:08:06
- * @Author  :   wangZhixin 
- * @Desc    :   获取图片的宽高比例
- */
-function getImgScale($imgUrl)
-{
-    $scale = 1;
-    $imgPath = $imgUrl . "?x-oss-process=image/info";
-    $imgInfo = getUrl($imgPath);
-    if ($imgInfo) {
-        $imgInfo = json_decode($imgInfo, true);
-        if (isset($imgInfo['ImageWidth']['value']) && isset($imgInfo['ImageHeight']['value'])) {
-            $scale = round($imgInfo['ImageWidth']['value'] / $imgInfo['ImageHeight']['value'], 2);
-        }
-    }
-    return $scale;
-}
-/**
- * @Time    :   2021/04/23 15:36:52
- * @Author  :   wangZhixin 
- * @Desc    :   生成订单号
- */
-function getOrderId()
-{
-    $orderId = date('Ymd');
-    $mill_time = microtime();
-    $timeInfo = explode(' ', $mill_time);
-    $orderId .= str_pad((string)($timeInfo[0] * 1000000), 6, "0", STR_PAD_LEFT);
-    $orderId .= rand(111, 999);
-    $orderId .= rand(111, 999);
-    $orderId .= rand(111111, 999999);
-    //检测订单号是否重复
-    $check = Db::table('order')->where('order_id', $orderId)->count();
-    if ($check > 0) {
-        $orderId = getOrderId();
-    }
-    return $orderId;
+    $firstStr     = mb_substr($user_name, 0, 3, 'utf-8');
+    $lastStr     = mb_substr($user_name, -4, 4, 'utf-8');
+    return $strlen == 7 ? $firstStr . str_repeat('*', mb_strlen($user_name, 'utf-8') - 1) : $firstStr . str_repeat("*", $strlen - 2) . $lastStr;
 }
 /**
  * @Time    :   2021/06/25 17:31:31
@@ -553,57 +457,6 @@ function formatLiveTime($live_time)
     return $text_day . " - " . $d . date('h:i', $live_time);
 }
 /**
- * @Time    :   2021/11/04 15:49:33
- * @Author  :   wangZhixin 
- * @Desc    :   获取用户的show_user_id
- */
-function getShowUserId($userId)
-{
-    $showUserId = 0;
-    $find = Db::table('user')->where(['user_id' => $userId])->find();
-    if ($find) {
-        $showUserId = $find['show_user_id'];
-    }
-    return $showUserId;
-}
-/**
- * @Time    :   2021/11/10 15:22:34
- * @Author  :   wangZhixin 
- * @Desc    :   websocket发送 '{"type":20,"user_id":"123", "live_id":"1", "message":{"content":{"message":"测试内推1"}}}'
- */
-function websocketToSend($send)
-{
-    if ($send) {
-        if (!is_json($send) && is_array($send)) {
-            $send = json_encode($send);
-        }
-        $client = stream_socket_client('tcp://' . config('config.websocket_text_gateway'));
-        if ($client) {
-            // 模拟超级用户，以文本协议发送数据，注意Text文本协议末尾有换行符（发送的数据中最好有能识别超级用户的字段），这样在Event.php中的onMessage方法中便能收到这个数据，然后做相应的处理即可
-            fwrite($client,  $send . "\n");
-        }
-    }
-}
-/**
- * @Time    :   2021/11/10 15:40:18
- * @Author  :   wangZhixin 
- * @Desc    :   开启商品竞价倒计时(废弃，现在使用swoole)
- */
-function setLiveGoodsTimer($liveId = 0, $liveGoodsId = 0, $addTime = 0)
-{
-    if ($liveId && $liveGoodsId && $addTime > 0) {
-        $send['type'] = 500;
-        $send['live_id'] = $liveId;
-        $send['live_goods_id'] = $liveGoodsId;
-        $send['add_time'] = $addTime;
-        $client = stream_socket_client('tcp://' . config('config.websocket_text_gateway'));
-        if ($client) {
-            // 模拟超级用户，以文本协议发送数据，注意Text文本协议末尾有换行符（发送的数据中最好有能识别超级用户的字段），这样在Event.php中的onMessage方法中便能收到这个数据，然后做相应的处理即可
-            fwrite($client,  json_encode($send) . "\n");
-        }
-    }
-}
-/**
  * @Time    :   2021/11/12 11:11:47
  * @Author  :   wangZhixin 
  * @Desc    :   转换数字为简短形式
@@ -624,44 +477,15 @@ function shortenNumber($n, $precision = 1)
 
     return $out;
 }
-/**
- * @Time    :   2021/11/26 14:53:50
- * @Author  :   wangZhixin 
- * @Desc    :   查询直播商品拍卖剩余时间
- */
-function getGoodsBiddingTime($liveId, $liveGoodsId)
+function echoHtml($data, $key)
 {
-    $returnTime = 0;
-    $where['live_goods_id'] = $liveGoodsId;
-    $where['live_id'] = $liveId;
-    $live_room_goods = Db::table('live_room_goods')->where($where)->find();
-    if ($live_room_goods) {
-        $bidding_time = time() - $live_room_goods['live_goods_opening_time'];
-        $bidding_time = ($live_room_goods['live_goods_bidding_time'] * 60) - $bidding_time;
-        //查看竞拍追加的时间
-        $sum_add_bidding_time = Db::table('live_room_goods_bidding')->where($where)->sum('add_bidding_time');
-        $returnTime = $bidding_time + $sum_add_bidding_time;
-        $returnTime = $returnTime < 0 ? 0 : $returnTime;
+    $return = "";
+    if (isset($data[$key])) {
+        $return = $data[$key];
     }
-    return $returnTime;
+    return $return;
 }
-/**
- * @Time    :   2021/12/07 11:02:26
- * @Author  :   wangZhixin 
- * @Desc    :   获取聊天信息chat_message
- */
-function getChatMessage($chat_message)
+function getPasswordMd5Admin(string $txt)
 {
-    if (is_json($chat_message)) {
-        $chat_message_array = json_decode($chat_message, true);
-        if (isset($chat_message_array['to_user_id'])) {
-            $user = Db::table('user')->where(['user_id' => $chat_message_array['to_user_id']])->find();
-            if ($user) {
-                $chat_message_array['nick_name'] = $user['nick_name'];
-                $chat_message_array['header_url'] = $user['header_url'];
-                $chat_message = json_encode($chat_message_array);
-            }
-        }
-    }
-    return $chat_message;
+    return md5(md5($txt . getConfig('api.config.MD5KEYAdmin')));
 }

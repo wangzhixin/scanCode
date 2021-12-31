@@ -5,8 +5,8 @@
 
 return [
    'tpl_replace_string' => array(
-      '__IMG__' => '/static/img',
-      '__JS__' => '/static/js',
-      '__CSS__' => '/static/css',
+      '__IMG__' => '/webStatic/img',
+      '__JS__' => '/webStatic/js',
+      '__CSS__' => '/webStatic/css',
    ),
 ];

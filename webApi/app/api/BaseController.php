@@ -151,7 +151,7 @@ abstract class BaseController
      */
     protected function getPasswordMd5Admin(string $txt)
     {
-        return md5(md5($txt . config('config.MD5KEYAdmin')));
+        return getPasswordMd5Admin($txt);
     }
     /**
      * @Time    :   2021/10/21 16:54:42

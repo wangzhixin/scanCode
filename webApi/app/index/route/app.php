@@ -15,4 +15,5 @@ Route::group(function () {
     Route::post('getHospitalList', 'Index/getHospitalList');
     Route::post('getDepartment', 'Index/getDepartment');
     Route::post('submitContent', 'Index/submitContent');
+    Route::post('ajaxLogin', 'Admin/ajaxLogin');
 });

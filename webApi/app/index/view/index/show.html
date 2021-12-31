@@ -5,48 +5,81 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>医疗机构新型冠状病毒肺炎筛查表 COVID-19 Screening Questionnaire for Healthcare Facilities</title>
+    <script src="__JS__/jquery-3.5.1.min.js?s=1"></script>
+    <title>
+        <?php echo config('config.title');?>
+    </title>
 </head>
 
 <body>
     <div class="main">
+        <?php if(isset($data['logo'])){?>
         <div class="logo">
-            <img src="https://xg.shiruankeji.com/static/img/logo.c60c52d.png" alt="">
+            <img src="<?php echo $data['logo'];?>" alt="">
         </div>
+        <?php }?>
         <div class="btnng">
             <div class="btn">
-                <div class="name">xxx</div>
-                <div class="phone">13263231324</div>
-                <div class="card">21315341534135435</div>
+                <div class="name">
+                    <?php echo $data['name'];?>
+                </div>
+                <div class="phone">
+                    <?php echo $data['phone_number'];?>
+                </div>
+                <div class="card">
+                    <?php echo $data['id_number'];?>
+                </div>
             </div>
         </div>
         <div class="rret">
             <div class="ret1">
                 <div class="dtitle">[扫码状态 Result]</div>
-                <div class="success">未见异常</div>
-                <div class="success">Pass</div>
+                <?php if($data['type']==1){?>
+                    <div class="success">未见异常</div>
+                    <div class="success">Pass</div>
+                <?php }else{?>
+                    <div class="warning">异常</div>
+                    <div class="warning">Warning</div>
+                <?php }?>
                 <div class="dtitle">[填写时间 Filling Time]</div>
-                <div class="dtime">2021-12-29 10:05</div>
+                <div class="dtime"><?php echo $data['add_time'];?></div>
                 <div class="dtitle">[有效时间 Result Valid Until]</div>
             </div>
             <div class="ret2">
-                <img src="__IMG__/error.png" alt="">
-            </div>
+                <img src="<?php echo $data['er_code'];?>" alt="">
         </div>
-        <div class="successTime">2021-12-30 10:05</div>
+        </div>
+        <?php if($data['type']==1){?>
+        <div class="successTime"><?php echo $data['invalid_time'];?></div>
+        <?php }else{?>
+        <div class="warningTime"><?php echo $data['invalid_time'];?></div>
+        <?php }?>
 
+        <?php if($data['type']==1){?>
         <div class="btng">
+        <?php }else{?>
+        <div class="btngWarning">
+        <?php }?>
             <div>请截屏，以便后续科室查看</div>
             <div>Take a Screenshot fo the Result for the further evaluation</div>
         </div>
 
-        <div class="btng">
+        <?php if($data['type']==1){?>
+        <div class="btng" id="return">
+        <?php }else{?>
+        <div class="btngWarning" id="return">
+        <?php }?>
             <div>返回重填</div>
             <div>Return refill</div>
         </div>
         <div style="height:50px;"></div>
     </div>
 </body>
+<script>
+    $("#return").click(function(){
+        window.location.href = "/index.php/index/index/add.html";
+    });
+</script>
 <style>
     * {
         margin: 0;
@@ -132,18 +165,36 @@
         -webkit-box-flex: 4;
         -ms-flex: 4;
         flex: 4;
+        margin-top: 1.3rem;
     }
-
+    .rret .ret2 img{
+        width:100%;
+    }
     .success,
     .successTime {
         text-align: center;
         color: #06a306fa;
         font-size: 33px;
     }
-
+    .warning,.warningTime{
+        text-align: center;
+        color: rgb(217 217 27);
+        font-size: 33px;
+    }
     .btng {
         margin: 1rem auto auto;
         background: #06a306fa;
+        text-align: center;
+        font-weight: 700;
+        color: #fff;
+        border-radius: 1rem;
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+        width: 70%;
+    }
+    .btngWarning{
+        margin: 1rem auto auto;
+        background: rgb(217 217 27);
         text-align: center;
         font-weight: 700;
         color: #fff;
