@@ -218,4 +218,44 @@ abstract class BaseController
         $orderDeliver = Db::table('order_deliver')->field('order_deliver_id,order_deliver_name')->where(['order_id' => $order_id, 'type' => 0, 'is_deleted' => 0])->find();
         return $orderDeliver;
     }
+    protected function getUserData(&$each)
+    {
+        $problemList = array();
+        foreach (json_decode($each['problemList'], true) as $eachProblem) {
+            $id = explode('v_', $eachProblem['id'])[1];
+            $problem = Db::table('problem')->where(['problem_id' => $id])->value('problem');
+            $problemList[] = [
+                'problem' => $problem,
+                'value' => $eachProblem['value']
+            ];
+        }
+        $each['problemList'] = $problemList;
+
+        $user_type = '本人';
+        if ($each['user_type'] == 1) {
+            $user_type = '同行人员1';
+        }
+        if ($each['user_type'] == 2) {
+            $user_type = '同行人员2';
+        }
+        $each['user_type'] = $user_type;
+
+        $each['invalid_time'] = date("Y-m-d H:i:s", $each['invalid_time']);
+
+        switch ($each['id_type']) {
+            case 1:
+                $id_type = '身份证';
+                break;
+            case 2:
+                $id_type = '港澳台通行证';
+                break;
+            case 3:
+                $id_type = '护照';
+                break;
+            default:
+                $id_type = "";
+                break;
+        }
+        $each['id_type'] = $id_type;
+    }
 }

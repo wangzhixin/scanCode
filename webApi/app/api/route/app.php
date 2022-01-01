@@ -34,4 +34,11 @@ Route::group(function () {
     Route::post('submitDepartmentList', 'Hospital/submitDepartmentList');
     Route::post('deleteDepartmentList', 'Hospital/deleteDepartmentList');
 
+    Route::post('getUserDataList', 'UserData/getUserDataList');
+    Route::post('exportUserData', 'UserData/exportUserData');
+
+    Route::post('getAdminUserList', 'AdminUser/getAdminUserList');
+    Route::post('deleteAdminUser', 'AdminUser/deleteAdminUser');
+    Route::post('submitAdminUser', 'AdminUser/submitAdminUser');
+
 })->middleware(\app\api\middleware\Token::class);

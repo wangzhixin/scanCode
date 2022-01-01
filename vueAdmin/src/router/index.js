@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'setting',
       name: 'setting',
       component: () => import('@/views/setting/index'),
-      meta: { title: '设置', icon: 'setting' }
+      meta: { title: '基础设置', icon: 'setting' }
     }]
   },
   {
@@ -91,12 +91,34 @@ export const constantRoutes = [
     path: '/department',
     component: Layout,
     redirect: '/department/department',
-    hidden: true, // 不在侧边栏显示
+    hidden: true,
     children: [{
       path: 'department',
       name: 'department',
       component: () => import('@/views/hospital/department'),
       meta: { title: '科室管理', activeMenu: '/hospital/hospital' }
+    }]
+  },
+  {
+    path: '/userData',
+    component: Layout,
+    redirect: '/userData',
+    children: [{
+      path: 'userData',
+      name: 'userData',
+      component: () => import('@/views/userData/index'),
+      meta: { title: '填报信息', icon: 'userData' }
+    }]
+  },
+  {
+    path: '/adminUser',
+    component: Layout,
+    redirect: '/adminUser',
+    children: [{
+      path: 'adminUser',
+      name: 'adminUser',
+      component: () => import('@/views/adminUser/index'),
+      meta: { title: '管理员配置', icon: 'adminuser' }
     }]
   },
 
