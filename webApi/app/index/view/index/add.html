@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo config('config.title');?></title>
-    <script src="__JS__/jquery-3.5.1.min.js?s=1"></script>
-    <link rel="stylesheet" href="__CSS__/add.css?s=3">
+    <script src="__JS__/jquery-3.5.1.min.js?s=2"></script>
+    <link rel="stylesheet" href="__CSS__/add.css?s=8">
 </head>
 
 <body>
@@ -84,14 +84,16 @@
             </div>
             <?php }?>
             <div class="CheckBox">
-                <div class="left video_choose"><input name="v_<?php echo $each['problem_id'];?>" type="radio" <?php echo $each['checked'][0];?> value="1" />是</div>
-                <div class="right video_choose"><input class="v_false" name="v_<?php echo $each['problem_id'];?>" type="radio" <?php echo $each['checked'][1];?> value="0" />否</div>
+                <div class="left video_choose"><input class="radio_type" name="v_<?php echo $each['problem_id'];?>" type="radio" <?php echo $each['checked'][0];?> value="1" /><label for="radio1">是</label></div>
+                <div class="right video_choose"><input class="radio_type v_false" name="v_<?php echo $each['problem_id'];?>" type="radio" <?php echo $each['checked'][1];?> value="0" /><label for="radio1">否</label></div>
             </div>
         </div>
         <?php }?>
 
         <div class="bottom-dinger">
-            <div><input id="remind" name="" type="checkbox" value="" /></div>
+            <div>
+                <input id="remind" name="" type="checkbox" value="" />
+            </div>
             <div class="dinger">重要提示：《传染病防治法》规定隐瞒疫区旅游史或接触史者要承担相应的法律责任</div>
         </div>
         <div class="dinger-en">
@@ -113,7 +115,7 @@
     <div class="alert">
         <div class="alertDiv">
             <div class="text">
-                <div class="error"><img src="__IMG__/error.png" alt=""></div>
+                <!-- <div class="error"><img src="__IMG__/error.png" alt=""></div> -->
                 <div id="alertMsg">证件号码不能为空</div>
             </div>
         </div>

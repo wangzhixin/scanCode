@@ -20,7 +20,12 @@ class Index
 
     public function index()
     {
-        Session::set('userId', 1);
+        // Session::set('userId', 1);
+        if (!$this->userId) {
+            $open_id = get_guid();
+            $userId = Db::table('user')->insertGetId(['open_id' => $open_id]);
+            Session::set('userId', $userId);
+        }
         $data['logo'] = '';
         $data['title'] = '';
         $data['title_en'] = '';
@@ -133,9 +138,9 @@ class Index
     {
         $result = array("code" => 0, 'list' => []);
         if ($this->userId) {
-            $er_code_url = 'http://www.baidu.com';
-            $postData = Request::post('postData', "");
             $userId = Session::get('userId');
+            // echo $er_code_url;exit;
+            $postData = Request::post('postData', "");
             if ($postData && $userId) {
                 $data['user_id'] = $userId;
                 $data['name'] = $postData['name'];
@@ -164,8 +169,19 @@ class Index
                 if ($type == 2) {
                     $erColor = ['r' => 217, 'g' => 217, 'b' => 27, 'a' => 0];
                 }
-                $data['er_code'] = $ercode->getCode($er_code_url, $erColor);
-                Db::table("user_data")->insert($data);
+                Db::startTrans();
+                try {
+
+                    $dataId = Db::table("user_data")->insertGetId($data);
+
+                    $er_code_url = getConfig('api.config.web_url') . (string)url("admin/index", ['id' => $dataId]);
+                    Db::table("user_data")->where(['data_id' => $dataId])->update(['er_code' => $ercode->getCode($er_code_url, $erColor)]);
+
+                    Db::commit();
+                } catch (\Exception $e) {
+                    Db::rollback();
+                    getErrorMessage($e);
+                }
             }
             $result = array("code" => 1, 'data' => 'ok');
         }

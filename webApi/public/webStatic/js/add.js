@@ -228,11 +228,96 @@ $(function () {
         $('input[name="' + name + '"]').attr("checked", false);
         $(this).children("input").attr("checked", true);
     });
+    /*
+    功能：验证身份证号码是否有效
+    提 示信息：未输入或输入身份证号不正确！
+    使用：isIdCard(obj)
+    返回：0,1,2,3
+    返回0表示身份证号码正确
+    返回1表示非法身份证号码
+    返回2表示分发地区
+    返回3表示非法生日
+*/
+    function isIdCard(obj) {
+        var aCity = { 11: "北京", 12: "天津", 13: "河北", 14: "山西", 15: "内蒙古", 21: "辽宁", 22: "吉林", 23: "黑龙 江", 31: "上海", 32: "江苏", 33: "浙江", 34: "安徽", 35: "福建", 36: "江西", 37: "山东", 41: "河南", 42: "湖 北", 43: "湖南", 44: "广东", 45: "广西", 46: "海南", 50: "重庆", 51: "四川", 52: "贵州", 53: "云南", 54: "西 藏", 61: "陕西", 62: "甘肃", 63: "青海", 64: "宁夏", 65: "新疆", 71: "台湾", 81: "香港", 82: "澳门", 91: "国 外" };
+        var iSum = 0;
+        var strIDno = obj;
+        var idCardLength = strIDno.length;
+        if (!/^\d{17}(\d|x)$/i.test(strIDno) && !/^\d{15}$/i.test(strIDno))
+            return 1; //非法身份证号
+
+        if (aCity[parseInt(strIDno.substr(0, 2))] == null)
+            return 2;// 非法地区
+        // 15位身份证转换为18位
+        if (idCardLength == 15) {
+            sBirthday = "19" + strIDno.substr(6, 2) + "-" + Number(strIDno.substr(8, 2)) + "-" + Number(strIDno.substr(10, 2));
+            var d = new Date(sBirthday.replace(/-/g, "/"))
+            var dd = d.getFullYear().toString() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+            if (sBirthday != dd)
+                return 3; //非法生日
+            strIDno = strIDno.substring(0, 6) + "19" + strIDno.substring(6, 15);
+            strIDno = strIDno + GetVerifyBit(strIDno);
+        }
+
+        // 判断是否大于2078年，小于1900年
+        var year = strIDno.substring(6, 10);
+        if (year < 1900 || year > 2078)
+            return 3;//非法生日
+
+        //18位身份证处理
+        //在后面的运算中x相当于数字10,所以转换成a
+        strIDno = strIDno.replace(/x$/i, "a");
+        sBirthday = strIDno.substr(6, 4) + "-" + Number(strIDno.substr(10, 2)) + "-" + Number(strIDno.substr(12, 2));
+        var d = new Date(sBirthday.replace(/-/g, "/"))
+        if (sBirthday != (d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate()))
+            return 3; //非法生日
+        // 身份证编码规范验证
+        for (var i = 17; i >= 0; i--)
+            iSum += (Math.pow(2, i) % 11) * parseInt(strIDno.charAt(17 - i), 11);
+        if (iSum % 11 != 1)
+            return 1;// 非法身份证号
+
+        // 判断是否屏蔽身份证
+        var words = new Array();
+        words = new Array("11111119111111111", "12121219121212121");
+
+        for (var k = 0; k < words.length; k++) {
+            if (strIDno.indexOf(words[k]) != -1) {
+                return 1;
+            }
+        }
+
+        return 0;
+    }
+    function checkHKMacao(code) {
+        var tip = 1;
+        if (!code || !/^[HMhm]{1}([0-9]{10}|[0-9]{8})$/.test(code)) {
+            tip = 0;
+        }
+        return tip;
+    }
+    function checkPassport(code) {
+        var tip = 1;
+        if (!code || !/^((1[45]\d{7})|(G\d{8})|(P\d{7})|(S\d{7,8}))?$/.test(code)) {
+            tip = 0;
+        }
+        return tip;
+    }
+    function checkPhone(phone) {
+        var tip = true;
+        if (!(/^1(3|4|5|6|7|8|9)\d{9}$/.test(phone))) {
+            tip = false;
+        }
+        return tip;
+    }
     $("#submit").click(function () {
         var name = $("#name").val(); if (name == "") { alerts('请输入姓名'); return false };
         var id_type = $("#id_type").val(); if (id_type == "") { alerts('请选择类型'); return false };
         var id_number = $("#id_number").val(); if (id_number == "") { alerts('请输入证件号码'); return false };
         var phone_number = $("#phone_number").val(); if (phone_number == "") { alerts('请输联系电话'); return false };
+        if (checkPhone(phone_number) == false) {
+            alerts('请输正确的手机号码'); return false
+        }
         var province_value = $("#province_value").val(); if (province_value == "") { alerts('请选择省份'); return false };
         var city_value = $("#city_value").val(); if (city_value == "") { alerts('请选择城市'); return false };
         var district_value = $("#district_value").val(); if (district_value == "") { alerts('请选择区域'); return false };
@@ -249,6 +334,27 @@ $(function () {
             if (eachValue == undefined) {
                 allRadio = false;
             }
+        }
+        switch (id_type) {
+            case '1':
+                if (isIdCard(id_number) != 0) {
+                    alerts('身份证号码不正确'); return false;
+                }
+                break;
+            case '2':
+                if (checkHKMacao(id_number) == false) {
+                    alerts('港澳台通行证号码不正确'); return false;
+                }
+                break;
+            case '3':
+                if (checkPassport(id_number) == false) {
+                    alerts('护照号码不正确'); return false;
+                }
+                break;
+
+            default:
+                alerts('请选择类型'); return false;
+                break;
         }
         if (allRadio == false) {
             alerts('您还有问题没有回答'); return false;
@@ -280,6 +386,7 @@ $(function () {
                 async: true,
                 data: { "postData": postData },
                 success: function (res) {
+                    $(".loading").hide();
                     window.location.href = "/index.php/index/index/show.html";
                 }
             });

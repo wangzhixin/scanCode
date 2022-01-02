@@ -24,30 +24,32 @@ class Admin
                 }
                 View::assign('data', $data);
 
+                $problemList = [];
+                $status = 1;
                 $userData = Db::table('user_data')->where(['data_id' => $id])->find();
-                $userData['id_type_text'] = config('idtype.list')[$userData['id_type']];
-                $userData['invalid_time_text'] = "已到期";
-                if($userData['invalid_time']<time()){
-                    $userData['invalid_time_text'] = date("Y-m-d H:i:s");
+                if ($userData) {
+                    $userData['id_type_text'] = getConfig('api.idtype.list')[$userData['id_type']];
+                    $userData['invalid_time_text'] = "已到期";
+                    if ($userData['invalid_time'] < time()) {
+                        $userData['invalid_time_text'] = date("Y-m-d H:i:s");
+                    }
+                    foreach (json_decode($userData['problemList'], true) as $each) {
+                        $choose = '否';
+                        if ($each['value'] == 1) {
+                            $choose = '是';
+                            $status = 2;
+                        }
+                        $problemList[] = [
+                            'title' => Db::table('problem')->where(['problem_id' => explode('v_', $each['id'])[1]])->value('problem'),
+                            'choose' => $choose,
+                            'value' => $each['value'],
+                        ];
+                    }
                 }
                 View::assign('userData', $userData);
-
-                $status = 1;
-                $problemList = [];
-                foreach (json_decode($userData['problemList'], true) as $each) {
-                    $choose = '否';
-                    if ($each['value'] == 1) {
-                        $choose = '是';
-                        $status = 2;
-                    }
-                    $problemList[] = [
-                        'title' => Db::table('problem')->where(['problem_id' => explode('v_', $each['id'])[1]])->value('problem'),
-                        'choose' => $choose,
-                        'value' => $each['value'],
-                    ];
-                }
                 View::assign('problemList', $problemList);
                 View::assign('status', $status);
+
                 return view();
             } else {
                 throw new \think\exception\HttpException(404, '404');
