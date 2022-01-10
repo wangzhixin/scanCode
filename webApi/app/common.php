@@ -489,3 +489,47 @@ function getPasswordMd5Admin(string $txt)
 {
     return md5(md5($txt . getConfig('api.config.MD5KEYAdmin')));
 }
+function ToUrlParams($urlObj)
+{
+    $buff = "";
+    foreach ($urlObj as $k => $v) {
+        if ($k != "sign") {
+            $buff .= $k . "=" . $v . "&";
+        }
+    }
+
+    $buff = trim($buff, "&");
+    return $buff;
+}
+function is_weixin()
+{
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
+        return true;
+    } else {
+        return false;
+    }
+}
+function get_url($url, $param = null)
+{
+    if ($param != null) {
+        $query = http_build_query($param);
+        $url = $url . '?' . $query;
+    }
+    $ch = curl_init();
+    if (stripos($url, "https://") !== false) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    }
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $content = curl_exec($ch);
+    $status = curl_getinfo($ch);
+    curl_close($ch);
+    if (intval($status["http_code"]) == 200) {
+        return $content;
+    } else {
+        echo $status["http_code"];
+        return false;
+    }
+}

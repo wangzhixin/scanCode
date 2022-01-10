@@ -20,21 +20,74 @@ class Index
 
     public function index()
     {
-        // Session::set('userId', 1);
-        if (!$this->userId) {
-            $open_id = get_guid();
-            $userId = Db::table('user')->insertGetId(['open_id' => $open_id]);
+        $code = Request::param('code', '');
+        if (is_weixin()) {
+            if (!$code) {
+                $this->weixinCode();
+            } else {
+                $this->getUser($code);
+                // Session::set('userId', 1);
+                // if (!$this->userId) {
+                //     $open_id = get_guid();
+                //     $userId = Db::table('user')->insertGetId(['open_id' => $open_id]);
+                //     Session::set('userId', $userId);
+                // }
+                $data['logo'] = '';
+                $data['title'] = '';
+                $data['title_en'] = '';
+                $find = Db::table('setting')->order('id', 'desc')->find();
+                if ($find) {
+                    $data = $find;
+                }
+                View::assign('data', $data);
+                return view();
+            }
+        } else {
+            echo "请在微信环境打开~";
+        }
+    }
+    private function getUser($code)
+    {
+        Db::startTrans();
+        try {
+            $userId = "";
+            $data = array();
+            $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' . config('config.appid') . '&secret=' . config('config.appsecret') . '&code=' . $code . '&grant_type=authorization_code';
+            $str = get_url($url);
+            $arr = json_decode($str, true);
+            $data['open_id'] = $arr['openid'];
+            $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $arr['access_token'] . '&openid=' . $arr['openid'];
+            $getUserName = json_decode(get_url($url), true);
+            $data['nick_name'] = $getUserName['nickname'];
+            $data['header_url'] = $getUserName['headimgurl'];
+            $user = Db::table('user')->where(['open_id' => $arr['openid']])->find();
+            if ($user) {
+                $userId = $user['user_id'];
+            } else {
+                $userId = Db::table('user')->insertGetId($data);
+            }
+            Db::commit();
             Session::set('userId', $userId);
+            return true;
+        } catch (\Exception $e) {
+            Db::rollback();
+            getErrorMessage($e);
+            echo "系统错误，请稍后~";
+            exit;
         }
-        $data['logo'] = '';
-        $data['title'] = '';
-        $data['title_en'] = '';
-        $find = Db::table('setting')->order('id', 'desc')->find();
-        if ($find) {
-            $data = $find;
-        }
-        View::assign('data', $data);
-        return view();
+    }
+    private function weixinCode()
+    {
+        $baseUrl = urlencode(config('config.web_url') . "/index.php/index/index/index.html");
+        $urlObj["appid"] = config('config.appid');
+        $urlObj["redirect_uri"] = $baseUrl;
+        $urlObj["response_type"] = 'code';
+        $urlObj["scope"] = "snsapi_userinfo"; //snsapi_base
+        $urlObj["state"] = "STATE" . "#wechat_redirect";
+        $bizString = ToUrlParams($urlObj);
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?" . $bizString;
+        Header("Location: $url");
+        exit();
     }
     public function add()
     {
