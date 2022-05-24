@@ -222,12 +222,22 @@ abstract class BaseController
     {
         $problemList = array();
         foreach (json_decode($each['problemList'], true) as $eachProblem) {
-            $id = explode('v_', $eachProblem['id'])[1];
-            $problem = Db::table('problem')->where(['problem_id' => $id])->value('problem');
-            $problemList[] = [
-                'problem' => $problem,
-                'value' => $eachProblem['value']
-            ];
+            $id = 0;
+            $explodeV = explode('v_', $eachProblem['id']);
+            if (isset($explodeV[1])) {
+                $id = $explodeV[1];
+            }
+            $explodeInput = explode('input_', $eachProblem['id']);
+            if (isset($explodeInput[1])) {
+                $id = $explodeInput[1];
+            }
+            if ($id) {
+                $problem = Db::table('problem')->where(['problem_id' => $id])->value('problem');
+                $problemList[] = [
+                    'problem' => $problem,
+                    'value' => $eachProblem['value']
+                ];
+            }
         }
         $each['problemList'] = $problemList;
 

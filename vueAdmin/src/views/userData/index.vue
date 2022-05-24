@@ -11,7 +11,8 @@
             <div v-for="(each,key) in props.row.problemList" :key="key">
               <p>{{ each.problem }}</p>
               <p v-if="each.value==='1'" style="color:red;">是</p>
-              <p v-else>否</p>
+              <p v-else-if="each.value==='0'">否</p>
+              <p v-else>{{ each.value }}</p>
               <el-divider />
             </div>
           </template>
