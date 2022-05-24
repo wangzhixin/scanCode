@@ -2,7 +2,7 @@
 // +----------------------------------------------------------------------
 // | 配置文件
 // +----------------------------------------------------------------------
-$webUrl = 'http://scancode.com';
+$webUrl = 'http://scancode.pureplusclinic.com';
 return [
     'web_url' => $webUrl,
     'tokenKey' => 'FcE0eVtwb2OCu4Kfek8s45emhyWdeJxb', //token加密key
