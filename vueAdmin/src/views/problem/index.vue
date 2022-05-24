@@ -44,7 +44,7 @@
 
     <el-dialog title="问题信息" :visible.sync="showProblem" width="600px" :before-close="cancelForm">
       <el-form ref="form" status-icon :model="form" :rules="rules">
-        <el-form-item label="问题：" label-width="120px" prop="problem">
+        <el-form-item label="类型：" label-width="120px" prop="problem">
           <el-radio-group v-model="form.type">
             <el-radio :label="1">单选</el-radio>
             <el-radio :label="2">输入</el-radio>
