@@ -25,6 +25,7 @@ class Admin
                 View::assign('data', $data);
 
                 $problemList = [];
+                $problemInputList = [];
                 $status = 1;
                 $userData = Db::table('user_data')->where(['data_id' => $id])->find();
                 if ($userData) {
@@ -34,20 +35,32 @@ class Admin
                         $userData['invalid_time_text'] = date("Y-m-d H:i:s");
                     }
                     foreach (json_decode($userData['problemList'], true) as $each) {
-                        $choose = '否';
-                        if ($each['value'] == 1) {
-                            $choose = '是';
-                            $status = 2;
+                        $explodeV = explode('v_', $each['id']);
+                        if (isset($explodeV[1])) {
+                            $choose = '否';
+                            if ($each['value'] == 1) {
+                                $choose = '是';
+                                $status = 2;
+                            }
+                            $problemList[] = [
+                                'title' => Db::table('problem')->where(['problem_id' => explode('v_', $each['id'])[1]])->value('problem'),
+                                'choose' => $choose,
+                                'value' => $each['value'],
+                            ];
                         }
-                        $problemList[] = [
-                            'title' => Db::table('problem')->where(['problem_id' => explode('v_', $each['id'])[1]])->value('problem'),
-                            'choose' => $choose,
-                            'value' => $each['value'],
-                        ];
+
+                        $explodeInput = explode('input_', $each['id']);
+                        if (isset($explodeInput[1])) {
+                            $problemInputList[] = [
+                                'title' => Db::table('problem')->where(['problem_id' => explode('input_', $each['id'])[1]])->value('problem'),
+                                'value' => $each['value'],
+                            ];
+                        }
                     }
                 }
                 View::assign('userData', $userData);
                 View::assign('problemList', $problemList);
+                View::assign('problemInputList', $problemInputList);
                 View::assign('status', $status);
 
                 return view();

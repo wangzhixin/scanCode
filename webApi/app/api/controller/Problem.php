@@ -25,6 +25,7 @@ class Problem extends BaseController
      */
     public function submitProblem()
     {
+        $type = $this->post('type', '', true);
         $problem = $this->post('problem', '', true);
         $problem_en = $this->post('problem_en', '', true);
         $problem_id = $this->post('problem_id', '');
@@ -32,6 +33,7 @@ class Problem extends BaseController
         $data['problem'] = $problem;
         $data['problem_en'] = $problem_en;
         $data['img'] = $img;
+        $data['type'] = $type;
         if ($problem_id) {
             $data['problem_id'] = $problem_id;
         }

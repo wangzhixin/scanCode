@@ -6,6 +6,15 @@
     <el-row>
       <el-table v-loading="checkLoading" :data="list" stripe style="width: 100%" :empty-text="emptyText">
         <el-table-column prop="problem_id" label="序号" />
+        <el-table-column label="类型">
+          <template slot-scope="scope">
+            <div v-if="scope.row.type==1">
+              单选
+            </div>
+            <div v-else>输入</div>
+
+          </template>
+        </el-table-column>
         <el-table-column prop="problem" show-overflow-tooltip label="问题" />
         <el-table-column prop="problem_en" show-overflow-tooltip label="英文" />
         <el-table-column label="图片">
@@ -35,6 +44,12 @@
 
     <el-dialog title="问题信息" :visible.sync="showProblem" width="600px" :before-close="cancelForm">
       <el-form ref="form" status-icon :model="form" :rules="rules">
+        <el-form-item label="问题：" label-width="120px" prop="problem">
+          <el-radio-group v-model="form.type">
+            <el-radio :label="1">单选</el-radio>
+            <el-radio :label="2">输入</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="问题：" label-width="120px" prop="problem">
           <el-input v-model="form.problem" />
         </el-form-item>
@@ -70,6 +85,7 @@ export default {
       checkLoading: false,
       list: [],
       form: {
+        type: 1,
         problem: '',
         problem_en: '',
         img: ''
@@ -108,6 +124,7 @@ export default {
     initForm() {
       this.replace++
       this.form = {
+        type: 1,
         problem: '',
         problem_en: '',
         img: ''
@@ -143,6 +160,7 @@ export default {
     editProblem(row) {
       this.showProblem = true
       this.form = {
+        type: row.type,
         problem_id: row.problem_id,
         problem: row.problem,
         problem_en: row.problem_en,

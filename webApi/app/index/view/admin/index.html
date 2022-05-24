@@ -63,6 +63,16 @@
             </div>
         </div>
         <?php }?>
+        <?php foreach($problemInputList as $each){?>
+            <div class="problem">
+                <div class="title">
+                    <?php echo $each['title'];?>
+                </div>
+                <div class="answer" >
+                    <?php echo $each['value'];?>
+                </div>
+            </div>
+        <?php }?>
         <div style="height:100px;"></div>
         <?php }else{?>
         <div class="list">用户不存在~</div>

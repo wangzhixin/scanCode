@@ -359,6 +359,19 @@ $(function () {
         if (allRadio == false) {
             alerts('您还有问题没有回答'); return false;
         }
+        var allInput = true;
+        var input_false = $(".input_false");
+
+        for (let index = 0; index < input_false.length; index++) {
+            var eachValue = $('input[name="' + input_false.eq(index).attr('name') + '"]').val();
+            problemList.splice(problemList.length, 0, { id: input_false.eq(index).attr('name'), value: eachValue });
+            if (eachValue == undefined || eachValue=="") {
+                input_false = false;
+            }
+        }
+        if (input_false == false) {
+            alerts('您还有问题没有回答'); return false;
+        }
         var remind = $("#remind").get(0).checked;
         if (remind == false) {
             alerts('请认真阅读并勾选阅读提示'); return false;

@@ -20,6 +20,17 @@ class Index
 
     public function index()
     {
+        // Session::set('userId', 1);
+        // $data['logo'] = '';
+        // $data['title'] = '';
+        // $data['title_en'] = '';
+        // $find = Db::table('setting')->order('id', 'desc')->find();
+        // if ($find) {
+        //     $data = $find;
+        // }
+        // View::assign('data', $data);
+        // return view();
+
         $code = Request::param('code', '');
         if (is_weixin()) {
             if (!$code) {
@@ -94,18 +105,25 @@ class Index
         $type = Request::param('type', 1);
         if ($this->userId) {
             $problemList = [];
-            $data = Db::table('user_data')->where(['user_id' => $this->userId, 'type' => $type])->order('data_id', 'desc')->find();
+            $problemInputList = [];
+            $data = Db::table('user_data')->where(['user_id' => $this->userId, 'user_type' => $type])->order('data_id', 'desc')->find();
             if ($data) {
                 $data['province_value_id'] = Db::table('area_list')->where(['area_name' => $data['province_value']])->value("area_id");
                 $data['city_value_id'] = Db::table('area_list')->where(['area_name' => $data['city_value']])->value("area_id");
                 $data['district_value_id'] = Db::table('area_list')->where(['area_name' => $data['district_value']])->value("area_id");
                 foreach (json_decode($data['problemList'], true) as $each) {
-                    $id = explode('v_', $each['id'])[1];
-                    $problemList[$id] = $each['value'];
+                    $explodeV = explode('v_', $each['id']);
+                    $explodeInput = explode('input_', $each['id']);
+                    if (isset($explodeV[1])) {
+                        $problemList[$explodeV[1]] = $each['value'];
+                    }
+                    if (isset($explodeInput[1])) {
+                        $problemInputList[$explodeInput[1]] = $each['value'];
+                    }
                 }
                 View::assign('problemList', $problemList);
             }
-            $problem = Db::table("problem")->where(['is_deleted' => 0])->select()->toArray();
+            $problem = Db::table("problem")->where(['type' => 1, 'is_deleted' => 0])->select()->toArray();
             foreach ($problem as &$eachProblem) {
                 $eachProblem['checked'] = array('', '');
                 if (count($problemList) > 0 && isset($problemList[$eachProblem['problem_id']])) {
@@ -116,12 +134,20 @@ class Index
                     }
                 }
             }
+            $problemInput = Db::table("problem")->where(['type' => 2, 'is_deleted' => 0])->select()->toArray();
+            foreach ($problemInput as &$eachInput) {
+                $eachInput['input_value'] = "";
+                if (count($problemInputList) > 0 && isset($problemInputList[$eachInput['problem_id']])) {
+                    $eachInput['input_value'] = $problemInputList[$eachInput['problem_id']];
+                }
+            }
             $idType = config('idtype.list');
             View::assign('problem', $problem);
             View::assign('apiUrl', getConfig("api.config.web_url") . "/index.php/index/");
             View::assign('data', $data);
             View::assign('idType', $idType);
             View::assign('type', $type);
+            View::assign('problemInput', $problemInput);
         } else {
             return redirect((string)url("index/index"));
         }
@@ -213,8 +239,11 @@ class Index
                 $data['type'] = $postData['peopleType'];
                 $type = 1;
                 foreach ($postData['problemList'] as $each) {
-                    if ($each['value'] > 0) {
-                        $type = 2;
+                    $explodeV = explode('v_', $each['id']);
+                    if (isset($explodeV[1])) {
+                        if ($each['value'] > 0) {
+                            $type = 2;
+                        }
                     }
                 }
                 $data['type'] = $type;
