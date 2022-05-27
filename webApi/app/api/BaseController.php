@@ -221,6 +221,7 @@ abstract class BaseController
     protected function getUserData(&$each)
     {
         $problemList = array();
+        $problemInputList = array();
         foreach (json_decode($each['problemList'], true) as $eachProblem) {
             $id = 0;
             $explodeV = explode('v_', $eachProblem['id']);
@@ -232,14 +233,24 @@ abstract class BaseController
                 $id = $explodeInput[1];
             }
             if ($id) {
-                $problem = Db::table('problem')->where(['problem_id' => $id])->value('problem');
+                $problem = Db::table('problem')->where(['problem_id' => $id])->find();
                 $problemList[] = [
-                    'problem' => $problem,
-                    'value' => $eachProblem['value']
+                    'problem' => $problem['problem'],
+                    'value' => $eachProblem['value'],
+                    'type' => $problem['type'],
+                    'problem_id' => $problem['problem_id'],
                 ];
+                if ($problem['type'] == 2) {
+                    $problemInputList[$problem['problem_id']] = [
+                        'problem' => $problem['problem'],
+                        'value' => $eachProblem['value'],
+                        'problem_id' => $problem['problem_id'],
+                    ];
+                }
             }
         }
         $each['problemList'] = $problemList;
+        $each['problemInputList'] = $problemInputList;
 
         $user_type = '本人';
         if ($each['user_type'] == 1) {
