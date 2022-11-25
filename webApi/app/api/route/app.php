@@ -15,7 +15,7 @@ Route::group(function () {
 });
 Route::group(function () {
     Route::post('getUserInfo', 'User/getUserInfo');
-    Route::post('logout', 'User/logoutAdmin');
+    Route::post('logoutAdmin', 'User/logoutAdmin');
     Route::post('getUserList', 'User/getUserList');
 
     Route::post('uploadFile', 'File/uploadFile');

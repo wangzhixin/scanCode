@@ -58,6 +58,9 @@ class AdminUser extends BaseController
     if ($admin_id) {
       $data['admin_id'] = $admin_id;
     }
+    if ($this->userId == $admin_id) {
+      $data['admin_type'] = 1;
+    }
     Db::table("admin_users")->save($data);
     return $this->jsonEncode();
   }
